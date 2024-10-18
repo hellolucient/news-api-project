@@ -1,1 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI & Wellness News Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #news {
+            margin-top: 20px;
+        }
+        .article {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .article h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI & Wellness News Generator</h1>
+        
+        <input type="text" id="topic" value="AI & Wellness" placeholder="Enter a topic">
+        <button onclick="fetchNews()">Fetch News</button>
+        
+        <div id="news"></div>
+    </div>
 
+    <script>
+    async function fetchNews() {
+        const topic = document.getElementById('topic').value;
+        const newsContainer = document.getElementById('news');
+        newsContainer.innerHTML = 'Loading...';
+        
+        try {
+            const response = await fetch(`/api/fetchNews?topic=${encodeURIComponent(topic)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            displayNews(data.articles);
+        } catch (error) {
+            console.error('Error fetching news:', error);
+            newsContainer.innerHTML = `Error fetching news: ${error.message}`;
+        }
+    }
+
+    function displayNews(articles) {
+        const newsContainer = document.getElementById('news');
+        newsContainer.innerHTML = '';
+        
+        if (articles && articles.length > 0) {
+            articles.forEach(article => {
+                const articleElement = document.createElement('div');
+                articleElement.className = 'article';
+                articleElement.innerHTML = `
+                    <h3>${article.title}</h3>
+                    <p>${article.description}</p>
+                    <a href="${article.url}" target="_blank">Read more</a>
+                `;
+                newsContainer.appendChild(articleElement);
+            });
+        } else {
+            newsContainer.innerHTML = 'No articles found.';
+        }
+    }
+    </script>
+</body>
+</html>

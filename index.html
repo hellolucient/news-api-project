@@ -64,23 +64,32 @@
     </div>
 
     <script>
-    async function fetchNews() {
-        const topic = document.getElementById('topic').value;
-        const newsContainer = document.getElementById('news');
-        newsContainer.innerHTML = 'Loading...';
-        
-        try {
-            const response = await fetch(`/api/fetchNEWS?topic=${encodeURIComponent(topic)}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            displayNews(data.articles);
-        } catch (error) {
-            console.error('Error fetching news:', error);
-            newsContainer.innerHTML = `Error fetching news: ${error.message}`;
+async function fetchNews() {
+    const topic = document.getElementById('topic').value;
+    const newsContainer = document.getElementById('news');
+    newsContainer.innerHTML = 'Loading...';
+    
+    console.log('Fetching news for topic:', topic);
+    
+    try {
+        const response = await fetch(`/api/fetchNEWS?topic=${encodeURIComponent(topic)}`);
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const data = await response.json();
+        console.log('Received data:', data);
+        if (data.articles && data.articles.length > 0) {
+            displayNews(data.articles);
+        } else {
+            console.log('No articles found in the response');
+            newsContainer.innerHTML = 'No articles found.';
+        }
+    } catch (error) {
+        console.error('Error fetching news:', error);
+        newsContainer.innerHTML = `Error fetching news: ${error.message}`;
     }
+}
 
     function displayNews(articles) {
         const newsContainer = document.getElementById('news');

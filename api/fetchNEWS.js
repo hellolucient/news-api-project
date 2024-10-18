@@ -10,7 +10,10 @@ module.exports = (req, res) => {
   const options = {
     hostname: 'newsapi.org',
     path: `/v2/everything?q=${encodeURIComponent(topic)}&apiKey=${newsApiKey}&language=en&pageSize=5`,
-    method: 'GET'
+    method: 'GET',
+    headers: {
+      'User-Agent': 'NewsAPIClient/1.0'
+    }
   };
 
   console.log('Request URL:', `https://${options.hostname}${options.path}`);

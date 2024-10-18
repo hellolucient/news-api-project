@@ -70,7 +70,7 @@
         newsContainer.innerHTML = 'Loading...';
         
         try {
-            const response = await fetch(`/api/fetchNews?topic=${encodeURIComponent(topic)}`);
+            const response = await fetch(`/api/fetchNEWS?topic=${encodeURIComponent(topic)}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

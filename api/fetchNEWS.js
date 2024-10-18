@@ -4,11 +4,16 @@ module.exports = (req, res) => {
   const { topic } = req.query;
   const newsApiKey = process.env.NEWS_API_KEY;
 
+  console.log('Received topic:', topic);
+  console.log('API Key:', newsApiKey ? 'Present' : 'Missing');
+
   const options = {
     hostname: 'newsapi.org',
     path: `/v2/everything?q=${encodeURIComponent(topic)}&apiKey=${newsApiKey}&language=en&pageSize=5`,
     method: 'GET'
   };
+
+  console.log('Request URL:', `https://${options.hostname}${options.path}`);
 
   const request = https.request(options, (response) => {
     let data = '';
@@ -18,13 +23,14 @@ module.exports = (req, res) => {
     });
 
     response.on('end', () => {
+      console.log('Raw API Response:', data);
       try {
         const parsedData = JSON.parse(data);
-        console.log('API Response:', parsedData); // Log the entire response
+        console.log('Parsed API Response:', parsedData);
         res.status(200).json(parsedData);
       } catch (error) {
         console.error('Error parsing JSON:', error);
-        res.status(500).json({ error: 'Error parsing API response', details: error.message });
+        res.status(500).json({ error: 'Error parsing API response', details: error.message, rawData: data });
       }
     });
   });
